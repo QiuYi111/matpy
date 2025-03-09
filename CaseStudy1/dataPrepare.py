@@ -27,18 +27,17 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
                          batch_size=512)
     
     if for_CNN:
-        dataset.set_format(type="torch", columns=["image"])
         datasetCNN = dataset.map(lambda x:{"image":to_cnn(x["image"])}, 
                          batched=True,  
                          batch_size=512)
+        datasetCNN.set_format(type="torch", columns=["image"])
         datasetCNN.save_to_disk(save_dir+"/datasetCNN")
         print(f"Dataset saved at {save_dir}"+"datasetCNN")
     elif for_svd:
-        dataset.set_format(type="torch", columns=["image"])
+        
         datasetSVD = dataset.map(lambda x:{"image":to_svd(x["image"])},
-                                 batched=True,
-                                 batch_size=512
                         )
+        datasetSVD.set_format(type="torch", columns=["image"])
         datasetSVD.save_to_disk(save_dir+"/datasetSVD")
         print(f"Dataset saved at {save_dir}"+"datasetSVD")
     else:
