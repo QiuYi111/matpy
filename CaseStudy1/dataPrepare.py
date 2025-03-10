@@ -3,7 +3,7 @@ from torchvision.transforms import v2
 import torch
 
 def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",for_svd=False,for_CNN=False):
-    dataset = load_dataset(dataset_name, split="train")
+    dataset = load_dataset(dataset_name, split="train",cache_dir="/Volumes/DataHub/huggingface/hub")
     print("Dataset Loaded")
     img=dataset["image"][0]
 
@@ -15,7 +15,7 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
  
     to_svd=v2.Compose([
                v2.PILToTensor(),
-               v2.Lambda(lambda x:torch.flatten(x))
+               v2.Lambda(lambda x:torch.flatten(x)),
         ])
 
     to_cnn=v2.Compose([
@@ -55,5 +55,5 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
 
 
 if __name__=="__main__":
-    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed",for_svd=True)
+    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed",for_CNN=True)
 

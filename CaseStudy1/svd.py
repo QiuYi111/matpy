@@ -5,11 +5,11 @@ dataset=load_from_disk("/Volumes/DataHub/dataProcessed/datasetSVD")
 
 print("Dataset Loaded from disk")
 
-X=[torch.reshape(sample["image"],(36000,)) for sample in dataset]
+X=[torch.reshape(sample["image"],(360000,)) for sample in dataset]
 
 torch.stack(X)
 
-print("X matrix built")
+
 
 U,S,Vh=torch.linalg.svd(X)
 
