@@ -15,6 +15,9 @@ class svd():
         v2.Grayscale(num_output_channels=1),
         v2.PILToTensor()              
      ])
+        self.load_eigenMatrix()
+        self.get_selected_U()
+
         print("SVD Initialized")
 
     def get_eigenMatrix(self):
@@ -27,52 +30,58 @@ class svd():
                 print(sample.shape)
             elif i%100==0:
                 print(i/self.data_num)
-            sample=torch.reshape(sample,(360000,))
+            sample=torch.reshape(sample,(360000,)).to("cpu")
             X.append(sample)
             i+=1
             if i >= self.data_num:
                 break
         print("finish building",i,"columns' X")
         self.X=torch.stack(X).to(dtype=torch.float32)
+        self.aveX=torch.mean(self.X,dim=0)
+        self.X=self.X-self.aveX
         self.X_loaded=True
         torch.save(self.X,"/Volumes/DataHub/dataProcessed/X.pt")
-        print("SVD start! X shape is ",X.shape)
+        print("SVD start! X shape is ",self.X.shape)
 
-        U,S,Vh=torch.linalg.svd(X,full_matrices=False)
+        U,S,Vh=torch.linalg.svd(self.X.T,full_matrices=False)
 
-        print("SVD Completed!")
+        print("SVD Completed!","U shape is", U.shape)
 
         torch.save(U,"/Volumes/DataHub/dataProcessed/eigenMatrix.pt")
 
         print("U matrix Saved!")
-
-        return U
+        self.U=U
+        self.get_selected_U()
     
     def load_eigenMatrix(self,U_dir="/Volumes/DataHub/dataProcessed/eigenMatrix.pt"):
         U=torch.load(U_dir)
-        self.U=U.to("mps")
+        self.U=U.to("cpu")
+        print("Loaded U",self.U.shape)
     
     def get_selected_U(self):
         self.Ur=self.U[:,:self.r]
-        print("Build ",self.r,"columns Ur!")
+        self.Ur=self.Ur.to("cpu")
+        print("Build ",self.r,"columns Ur!",self.Ur.shape)
     
     def load_image(self,img_path):
         img=Image.open(img_path)
         img_tensor=self.common_trans(img)
         img_tensor=img_tensor.to("mps")
-        img=torch.reshape(img_tensor,(36000,))
+        img=torch.reshape(img_tensor,(360000,)).to(device="cpu",dtype=torch.float32)
         return img
     
     def show_img(self,img_tensor):
         img_tensor=torch.reshape(img_tensor,(600,600))
-        img=v2.ToPILImage(img_tensor)
+        transform=v2.ToPILImage()
+        img=transform(img_tensor)
         img.show()
 
 
     def img_rebuild(self,img_path):
         img=self.load_image(img_path)
         
-        re_img=self.Ur @ (self.Ur.T @ img)
+        re_img=self.Ur @ (self.Ur.T @ img)+self.aveX 
+
         self.show_img(re_img)
 
     def get_alpha(self,img_path):
@@ -116,9 +125,7 @@ class svd():
         }
     
 if __name__ =="__main__":
-    SVD=svd(r=100)
-    SVD.get_selected_U()
-    SVD.load_eigenMatrix
-    SVD.img_rebuild("/Desktop/image.jpg")
+    SVD=svd(r=5000)
+    SVD.img_rebuild("/Users/jingyi/Desktop/image.jpg")
     
 

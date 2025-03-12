@@ -8,14 +8,14 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
     img=dataset["image"][0]
 
     common_transform = v2.Compose([
-        v2.ToDtype(torch.uint8),
         v2.Resize(size),          
         v2.Grayscale(num_output_channels=1),               
      ])
  
     to_svd=v2.Compose([
                v2.PILToTensor(),
-               v2.Lambda(lambda x:torch.flatten(x)),
+               v2.Lambda(lambda x:x.to("mps")),
+               v2.Lambda(lambda x:torch.flatten(x).to("cpu",dtype=torch.float32)),
         ])
 
     to_cnn=v2.Compose([
@@ -35,9 +35,10 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
         print(f"Dataset saved at {save_dir}"+"datasetCNN")
     elif for_svd:
         
-        datasetSVD = dataset.map(lambda x:{"image":to_svd(x["image"])},
+        datasetSVD = dataset.map(lambda x:{"image":to_svd(x["image"])}
                         )
         datasetSVD.set_format(type="torch", columns=["image"])
+        print("SVD size",datasetSVD["image"][0].shape)
         datasetSVD.save_to_disk(save_dir+"/datasetSVD")
         print(f"Dataset saved at {save_dir}"+"datasetSVD")
     else:
@@ -55,5 +56,5 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
 
 
 if __name__=="__main__":
-    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed",for_CNN=True)
+    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed",for_svd=True)
 
