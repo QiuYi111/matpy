@@ -38,7 +38,6 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
         datasetSVD = dataset.map(lambda x:{"image":to_svd(x["image"])}
                         )
         datasetSVD.set_format(type="torch", columns=["image"])
-        print("SVD size",datasetSVD["image"][0].shape)
         datasetSVD.save_to_disk(save_dir+"/datasetSVD")
         print(f"Dataset saved at {save_dir}"+"datasetSVD")
     else:
