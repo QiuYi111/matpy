@@ -136,7 +136,7 @@ class svd():
         }
     
 if __name__ =="__main__":
-    SVD=svd(r=60000,data_num=60000,label=8,dataset_dir="/Volumes/DataHub/dataProcessed/mnist/datasetSVD")
+    SVD=svd(r=60000,data_num=60000,label=5,dataset_dir="/Volumes/DataHub/dataProcessed/mnist/datasetSVD")
     SVD.show_img(SVD.aveX)
     SVD.img_rebuild("/Users/jingyi/Desktop/image.jpg")
 

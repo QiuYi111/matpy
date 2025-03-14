@@ -3,7 +3,7 @@ from torchvision.transforms import v2
 import torch
 
 def dataPrepare(dataset_name="ylecun/mnist", size=(28,28), save_dir="",for_svd=False,for_CNN=False):
-    dataset = load_dataset(dataset_name, split="train",cache_dir="/Volumes/DataHub/huggingface/hub")
+    dataset = load_dataset(dataset_name, split="test",cache_dir="/Volumes/DataHub/huggingface/hub")
     print("Dataset Loaded")
     img=dataset["image"][0]
 
@@ -55,5 +55,5 @@ def dataPrepare(dataset_name="ylecun/mnist", size=(28,28), save_dir="",for_svd=F
 
 
 if __name__=="__main__":
-    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed/mnist",for_svd=True)
+    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed/mnist/test",for_CNN=True)
 
