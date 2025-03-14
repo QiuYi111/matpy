@@ -2,7 +2,7 @@ from datasets import load_dataset
 from torchvision.transforms import v2
 import torch
 
-def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",for_svd=False,for_CNN=False):
+def dataPrepare(dataset_name="ylecun/mnist", size=(28,28), save_dir="",for_svd=False,for_CNN=False):
     dataset = load_dataset(dataset_name, split="train",cache_dir="/Volumes/DataHub/huggingface/hub")
     print("Dataset Loaded")
     img=dataset["image"][0]
@@ -39,7 +39,7 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
                         )
         datasetSVD.set_format(type="torch", columns=["image"])
         datasetSVD.save_to_disk(save_dir+"/datasetSVD")
-        print(f"Dataset saved at {save_dir}"+"datasetSVD")
+        print(f"Dataset saved at {save_dir}"+"/datasetSVD")
     else:
         img_processed=dataset["image"][5399]
         img_processed.show()
@@ -55,5 +55,5 @@ def dataPrepare(dataset_name="mertcobanov/animals", size=(600,600), save_dir="",
 
 
 if __name__=="__main__":
-    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed",for_svd=True)
+    dataPrepare(save_dir="/Volumes/DataHub/dataProcessed/mnist",for_svd=True)
 
